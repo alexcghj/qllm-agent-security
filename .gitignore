@@ -1,0 +1,28 @@
+# Models — never commit GGUF files (huge); pull them via Ollama instead
+*.gguf
+data/models/
+
+# Raw / large intermediate results
+results/raw/
+*.tmp
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Secrets (never commit API keys etc.)
+.env
+*.key
