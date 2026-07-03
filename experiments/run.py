@@ -47,11 +47,15 @@ MODELS_TO_TEST = [
     {"family": "qwen2.5-1.5b", "quant": "Q8_0",
      "ollama_name": "qwen2.5:1.5b-instruct-q8_0"},
 
-    # Llama-3.2-1B — раскомментируй после скачивания:
-    # {"family": "llama3.2-1b", "quant": "Q4_K_M",
-    #  "ollama_name": "llama3.2:1b-instruct-q4_K_M"},
-    # {"family": "llama3.2-1b", "quant": "Q8_0",
-    #  "ollama_name": "llama3.2:1b-instruct-q8_0"},
+    # Llama-3.2-1B — все 4 квантизации
+    {"family": "llama3.2-1b", "quant": "Q4_K_M",
+     "ollama_name": "llama3.2:1b-instruct-q4_K_M"},
+    {"family": "llama3.2-1b", "quant": "Q5_K_M",
+     "ollama_name": "llama3.2:1b-instruct-q5_K_M"},
+    {"family": "llama3.2-1b", "quant": "Q6_K",
+     "ollama_name": "llama3.2:1b-instruct-q6_K"},
+    {"family": "llama3.2-1b", "quant": "Q8_0",
+     "ollama_name": "llama3.2:1b-instruct-q8_0"},
 ]
 
 QUANT_ORDER = ["Q4_K_M", "Q5_K_M", "Q6_K", "Q8_0"]
