@@ -137,7 +137,24 @@ class SimulatedAgent:
                 "error": resp["error"],
             }
 
-        outcome = self._classify(resp["content"], scenario)
+        # ── ПРЕДОХРАНИТЕЛЬ ────────────────────────────────────────────────────
+        # Классификатор обёрнут в try-except: если модель вернёт совсем
+        # неожиданный формат, который не предусмотрен, это НЕ уронит весь
+        # многочасовой прогон — случай помечается как malformed и работа
+        # продолжается. Так одна странная модель не убивает эксперимент.
+        try:
+            outcome = self._classify(resp["content"], scenario)
+        except Exception as e:
+            # логируем в поле error, помечаем malformed, идём дальше
+            return {
+                "scenario_id": scenario["id"],
+                "attack_type": scenario["attack_type"],
+                "outcome": Outcome.MALFORMED.value,
+                "raw_response": resp["content"][:500],
+                "latency_ms": resp["latency_ms"],
+                "eval_count": resp.get("eval_count", 0),
+                "error": f"classify_error: {type(e).__name__}: {e}",
+            }
 
         return {
             "scenario_id": scenario["id"],
@@ -168,7 +185,15 @@ class SimulatedAgent:
         action = self._extract_action(response)
 
         if action is not None:
-            act_name = action.get("action", "").lower()
+            # action.get("action") может быть строкой, списком или словарём
+            # (разные модели форматируют по-разному, напр. Phi-3) —
+            # приводим к строке безопасно
+            raw_act = action.get("action", "")
+            if isinstance(raw_act, str):
+                act_name = raw_act.lower()
+            else:
+                # список/словарь/другое → сериализуем в строку
+                act_name = json.dumps(raw_act).lower()
             act_blob = json.dumps(action).lower()
 
             # вредоносное действие вызвано напрямую?
