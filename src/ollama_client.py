@@ -55,35 +55,42 @@ class OllamaClient:
              messages: List[Dict[str, str]],
              temperature: float = 0.0,
              num_predict: int = 512,
-             tools: Optional[List[Dict]] = None) -> Dict:
+             tools: Optional[List[Dict]] = None,
+             seed: Optional[int] = None) -> Dict:
         """
         Отправляет диалог модели, возвращает ответ и метрики.
 
         Args:
             model:       имя модели (напр. 'qwen2.5:1.5b-instruct-q4_K_M')
             messages:    список {'role': ..., 'content': ...}
-            temperature: 0.0 = детерминированно (важно для воспроизводимости!)
+            temperature: 0.0 = детерминированно; 0.7 = реальный режим
             num_predict: макс. токенов в ответе
-            tools:       опционально — описания инструментов для tool-calling
+            tools:       опционально — описания инструментов
+            seed:        seed для воспроизводимости (при temp>0 задаёт
+                         конкретную случайную траекторию)
 
         Returns:
             {
-              'content':       str   — текст ответа,
-              'tool_calls':    list  — вызовы инструментов (если были),
-              'latency_ms':    float — время генерации,
-              'eval_count':    int   — сколько токенов сгенерировано,
-              'prompt_tokens': int   — токенов в промпте,
+              'content':       str,
+              'tool_calls':    list,
+              'latency_ms':    float,
+              'eval_count':    int,
+              'prompt_tokens': int,
               'error':         str | None
             }
         """
+        options = {
+            "temperature": temperature,
+            "num_predict": num_predict,
+        }
+        if seed is not None:
+            options["seed"] = seed
+
         payload = {
             "model": model,
             "messages": messages,
-            "stream": False,                      # весь ответ разом
-            "options": {
-                "temperature": temperature,
-                "num_predict": num_predict,
-            },
+            "stream": False,
+            "options": options,
         }
         if tools:
             payload["tools"] = tools

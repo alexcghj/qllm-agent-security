@@ -207,6 +207,116 @@ def chi_square_2x2(a: int, b: int, c: int, d: int) -> dict:
     }
 
 
+# ── effect size (Cohen's h для разницы долей) ─────────────────────────────────
+
+def cohens_h(p1: float, p2: float) -> dict:
+    """
+    Cohen's h — размер эффекта для разницы двух пропорций.
+    p1, p2 в [0,1]. |h|: 0.2 малый, 0.5 средний, 0.8 большой.
+    Значимость говорит ЕСТЬ ли эффект, effect size — НАСКОЛЬКО велик.
+    """
+    phi1 = 2 * math.asin(math.sqrt(max(0, min(1, p1))))
+    phi2 = 2 * math.asin(math.sqrt(max(0, min(1, p2))))
+    h = abs(phi1 - phi2)
+    if h < 0.2:
+        mag = "negligible"
+    elif h < 0.5:
+        mag = "small"
+    elif h < 0.8:
+        mag = "medium"
+    else:
+        mag = "large"
+    return {"h": round(h, 3), "magnitude": mag}
+
+
+# ── поправки на множественные сравнения ───────────────────────────────────────
+
+def bonferroni_correction(p_values: list, alpha: float = 0.05) -> dict:
+    """Поправка Бонферрони: делит порог на число тестов."""
+    n = len(p_values)
+    if n == 0:
+        return {"corrected_alpha": alpha, "significant": [],
+                "n_tests": 0, "n_significant": 0}
+    ca = alpha / n
+    sig = [p < ca for p in p_values]
+    return {"corrected_alpha": round(ca, 6), "significant": sig,
+            "n_tests": n, "n_significant": sum(sig)}
+
+
+def holm_correction(p_values: list, alpha: float = 0.05) -> dict:
+    """Поправка Холма: ступенчатая, менее консервативна чем Бонферрони."""
+    n = len(p_values)
+    if n == 0:
+        return {"significant": [], "n_tests": 0, "n_significant": 0}
+    indexed = sorted(enumerate(p_values), key=lambda x: x[1])
+    sig = [False] * n
+    for rank, (orig_idx, p) in enumerate(indexed):
+        if p < alpha / (n - rank):
+            sig[orig_idx] = True
+        else:
+            break
+    return {"significant": sig, "n_tests": n, "n_significant": sum(sig)}
+
+
+# ── попарное сравнение групп ──────────────────────────────────────────────────
+
+def pairwise_comparison(groups: dict, alpha: float = 0.05) -> dict:
+    """
+    Все пары групп по ASR + z-тест + effect size + поправка Холма.
+
+    groups: {name: {'success': int, 'n': int}}
+    """
+    names = list(groups.keys())
+    pairs, p_values = [], []
+
+    for i in range(len(names)):
+        for j in range(i + 1, len(names)):
+            a, b = names[i], names[j]
+            ga, gb = groups[a], groups[b]
+            zt = two_proportion_z(ga["success"], ga["n"], gb["success"], gb["n"])
+            h = cohens_h(ga["success"]/ga["n"] if ga["n"] else 0,
+                         gb["success"]/gb["n"] if gb["n"] else 0)
+            pairs.append({
+                "group_a": a, "group_b": b,
+                "asr_a": round(100*ga["success"]/ga["n"], 1) if ga["n"] else 0,
+                "asr_b": round(100*gb["success"]/gb["n"], 1) if gb["n"] else 0,
+                "diff_pp": zt["diff_pct"], "z": zt["z"], "p_value": zt["p_value"],
+                "effect_h": h["h"], "effect_magnitude": h["magnitude"],
+            })
+            p_values.append(zt["p_value"])
+
+    holm = holm_correction(p_values, alpha)
+    for pair, s in zip(pairs, holm["significant"]):
+        pair["significant_holm"] = s
+
+    return {"pairs": pairs, "n_comparisons": len(pairs),
+            "n_significant_after_correction": holm["n_significant"]}
+
+
+# ── агрегация по seeds ────────────────────────────────────────────────────────
+
+def aggregate_over_seeds(per_seed_asr: list) -> dict:
+    """
+    Среднее ± std + CI по seed-прогонам. Ключевое для воспроизводимости:
+    показывает стабильность результата между независимыми прогонами.
+    per_seed_asr: список ASR (%) по seeds.
+    """
+    if not per_seed_asr:
+        return {"mean": 0, "std": 0, "min": 0, "max": 0,
+                "ci_low": 0, "ci_high": 0, "n_seeds": 0}
+    arr = np.array(per_seed_asr)
+    mean = float(arr.mean())
+    std = float(arr.std(ddof=1)) if len(arr) > 1 else 0.0
+    margin = 1.96 * std / math.sqrt(len(arr)) if len(arr) > 1 else 0.0
+    return {
+        "mean": round(mean, 2), "std": round(std, 2),
+        "min": round(float(arr.min()), 2), "max": round(float(arr.max()), 2),
+        "ci_low": round(max(0, mean - margin), 2),
+        "ci_high": round(min(100, mean + margin), 2),
+        "n_seeds": len(arr),
+    }
+
+
 if __name__ == "__main__":
     # самопроверка на известных значениях
     print("=== Проверка stats.py ===\n")
@@ -232,5 +342,35 @@ if __name__ == "__main__":
     res = chi_square_2x2(15, 15, 6, 24)
     print(f"chi2 (same data): chi2={res['chi2']}, "
           f"p={res['p_value']}, значимо={res['significant_05']}")
+
+    # ── новые функции ────────────────────────────────────────────────────────
+    print("\n=== Расширенная статистика ===")
+
+    # Cohen's h: 100% vs 22% — должен быть большой эффект
+    h = cohens_h(1.0, 0.22)
+    print(f"Cohen's h (100% vs 22%): h={h['h']} ({h['magnitude']})")
+
+    # попарное сравнение стилей (реальные данные из эксперимента)
+    style_groups = {
+        "hidden":     {"success": 72, "n": 72},   # 100%
+        "imperative": {"success": 60, "n": 72},   # ~83%
+        "authority":  {"success": 16, "n": 72},   # ~22%
+        "roleplay":   {"success": 24, "n": 72},   # ~33%
+        "urgency":    {"success": 18, "n": 72},   # ~25%
+    }
+    pw = pairwise_comparison(style_groups)
+    print(f"\nПопарные сравнения стилей: {pw['n_comparisons']} пар, "
+          f"значимых после Холма: {pw['n_significant_after_correction']}")
+    for p in pw["pairs"][:3]:
+        print(f"  {p['group_a']} vs {p['group_b']}: "
+              f"{p['asr_a']}% vs {p['asr_b']}%, "
+              f"h={p['effect_h']} ({p['effect_magnitude']}), "
+              f"significant={p['significant_holm']}")
+
+    # агрегация по seeds
+    seeds_asr = [52.8, 55.1, 51.0]
+    agg = aggregate_over_seeds(seeds_asr)
+    print(f"\nПо seeds {seeds_asr}: mean={agg['mean']}±{agg['std']}, "
+          f"CI=[{agg['ci_low']}, {agg['ci_high']}]")
 
     print("\nВсе функции работают.")

@@ -82,7 +82,8 @@ class SimulatedAgent:
             lines.append(f'  - {t["name"]}({args}): {t["description"]}')
         return "\n".join(lines)
 
-    def run_scenario(self, scenario: Dict) -> Dict:
+    def run_scenario(self, scenario: Dict, seed: int = None,
+                     temperature: float = 0.7) -> Dict:
         """
         Прогоняет один сценарий атаки.
 
@@ -121,8 +122,9 @@ class SimulatedAgent:
         resp = self.client.chat(
             model=self.model,
             messages=messages,
-            temperature=0.0,
+            temperature=temperature,
             num_predict=256,
+            seed=seed,
         )
 
         if resp["error"]:
