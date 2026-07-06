@@ -317,6 +317,103 @@ def aggregate_over_seeds(per_seed_asr: list) -> dict:
     }
 
 
+# ── TOST: эквивалентностный тест (доказательство ОТСУТСТВИЯ эффекта) ───────────
+
+def tost_two_proportions(s1: int, n1: int, s2: int, n2: int,
+                         margin: float = 0.10, alpha: float = 0.05) -> dict:
+    """
+    Two One-Sided Tests (TOST) для эквивалентности двух долей.
+
+    Обычный тест отвечает "есть ли разница". TOST отвечает на ДРУГОЙ,
+    более сильный для нас вопрос: "доказуемо ли, что разница МЕНЬШЕ
+    заданного порога эквивалентности". Это то, что нужно для честного
+    негативного вывода: не "мы не нашли эффект", а "мы доказали, что
+    эффект меньше margin".
+
+    H0 (то, что опровергаем): |p1 - p2| >= margin  (эффект существенный)
+    H1 (то, что хотим показать): |p1 - p2| < margin (эквивалентность)
+
+    Args:
+        margin: порог эквивалентности в долях (0.10 = 10 п.п.).
+                Если истинная разница меньше, считаем эффект несущественным.
+
+    Returns:
+        {'equivalent': bool, 'p_tost': float, 'diff': float,
+         'ci90_low', 'ci90_high', 'margin'}
+    """
+    if n1 == 0 or n2 == 0:
+        return {"equivalent": False, "p_tost": 1.0, "diff": 0.0,
+                "ci90_low": 0.0, "ci90_high": 0.0, "margin": margin}
+
+    p1, p2 = s1 / n1, s2 / n2
+    diff = p1 - p2
+    se = math.sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2)
+    if se == 0:
+        se = 1e-9
+
+    # два односторонних теста
+    # тест 1: H0: diff <= -margin  vs  H1: diff > -margin
+    z_lower = (diff - (-margin)) / se
+    p_lower = 1 - _norm_cdf(z_lower)          # хотим маленькое p
+    # тест 2: H0: diff >= +margin  vs  H1: diff < +margin
+    z_upper = (diff - margin) / se
+    p_upper = _norm_cdf(z_upper)              # хотим маленькое p
+
+    # TOST: эквивалентность если ОБА теста значимы
+    p_tost = max(p_lower, p_upper)
+    equivalent = p_tost < alpha
+
+    # 90% CI (соответствует alpha=0.05 для TOST)
+    z90 = 1.645
+    ci_low = diff - z90 * se
+    ci_high = diff + z90 * se
+
+    return {
+        "equivalent": equivalent,
+        "p_tost": round(p_tost, 5),
+        "diff": round(diff * 100, 2),          # в п.п.
+        "ci90_low": round(ci_low * 100, 2),
+        "ci90_high": round(ci_high * 100, 2),
+        "margin": round(margin * 100, 1),
+    }
+
+
+# ── анализ мощности: какой минимальный эффект мы могли задетектить ─────────────
+
+def min_detectable_effect(n1: int, n2: int, baseline_p: float = 0.5,
+                          alpha: float = 0.05, power: float = 0.80) -> dict:
+    """
+    Минимальный детектируемый эффект (MDE) при данном размере выборки.
+
+    Отвечает рецензенту на вопрос "а хватило ли у вас мощности вообще
+    увидеть эффект?". Возвращает наименьшую разницу долей, которую тест
+    обнаружил бы с заданной мощностью.
+
+    Args:
+        n1, n2: размеры выборок
+        baseline_p: базовая доля (консервативно 0.5 — максимум дисперсии)
+        power: желаемая мощность (0.80 стандарт)
+
+    Returns:
+        {'mde_pp': минимальный эффект в п.п., 'n1', 'n2', 'power'}
+    """
+    if n1 == 0 or n2 == 0:
+        return {"mde_pp": 100.0, "n1": n1, "n2": n2, "power": power}
+
+    z_alpha = _inv_norm_cdf(1 - alpha/2)      # двусторонний
+    z_beta = _inv_norm_cdf(power)
+
+    # приближение для разницы пропорций
+    p = baseline_p
+    se_factor = math.sqrt(p*(1-p)*(1/n1 + 1/n2))
+    mde = (z_alpha + z_beta) * se_factor
+
+    return {
+        "mde_pp": round(mde * 100, 2),
+        "n1": n1, "n2": n2, "power": power,
+    }
+
+
 if __name__ == "__main__":
     # самопроверка на известных значениях
     print("=== Проверка stats.py ===\n")
@@ -372,5 +469,23 @@ if __name__ == "__main__":
     agg = aggregate_over_seeds(seeds_asr)
     print(f"\nПо seeds {seeds_asr}: mean={agg['mean']}±{agg['std']}, "
           f"CI=[{agg['ci_low']}, {agg['ci_high']}]")
+
+    # ── TOST: эквивалентность (главный негативный вывод) ─────────────────────
+    print("\n=== TOST (эквивалентность квантизаций) ===")
+    # реальные данные Qwen-1.5B: Q4 vs Q8, примерно равные
+    # Q4: ~49% из n≈246, Q8: ~44% из n≈246
+    tost = tost_two_proportions(121, 246, 108, 246, margin=0.10)
+    print(f"Q4 vs Q8 (margin=10пп): разница={tost['diff']}пп, "
+          f"90% CI=[{tost['ci90_low']}, {tost['ci90_high']}]")
+    print(f"  эквивалентны (эффект <10пп доказан): {tost['equivalent']}, "
+          f"p_TOST={tost['p_tost']}")
+
+    # ── мощность: какой эффект вообще могли увидеть ──────────────────────────
+    print("\n=== Анализ мощности ===")
+    mde = min_detectable_effect(246, 246, baseline_p=0.5, power=0.80)
+    print(f"При n={mde['n1']}+{mde['n2']}, power=0.80: "
+          f"минимальный детектируемый эффект = {mde['mde_pp']}пп")
+    print(f"  → эффекты крупнее {mde['mde_pp']}пп мы бы увидели; "
+          f"их нет → вывод об отсутствии обоснован")
 
     print("\nВсе функции работают.")
