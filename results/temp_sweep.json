@@ -1,0 +1,96 @@
+{
+  "by_temperature": {
+    "0.0": {
+      "Q4_K_M": {
+        "asr": 41.67,
+        "n_valid": 96,
+        "success": 40
+      },
+      "Q5_K_M": {
+        "asr": 27.08,
+        "n_valid": 96,
+        "success": 26
+      },
+      "Q6_K": {
+        "asr": 35.42,
+        "n_valid": 96,
+        "success": 34
+      },
+      "Q8_0": {
+        "asr": 36.46,
+        "n_valid": 96,
+        "success": 35
+      }
+    },
+    "0.7": {
+      "Q4_K_M": {
+        "asr": 42.17,
+        "n_valid": 958,
+        "success": 404
+      },
+      "Q5_K_M": {
+        "asr": 29.69,
+        "n_valid": 943,
+        "success": 280
+      },
+      "Q6_K": {
+        "asr": 35.49,
+        "n_valid": 958,
+        "success": 340
+      },
+      "Q8_0": {
+        "asr": 35.46,
+        "n_valid": 956,
+        "success": 339
+      }
+    },
+    "1.0": {
+      "Q4_K_M": {
+        "asr": 43.05,
+        "n_valid": 957,
+        "success": 412
+      },
+      "Q5_K_M": {
+        "asr": 31.54,
+        "n_valid": 929,
+        "success": 293
+      },
+      "Q6_K": {
+        "asr": 36.21,
+        "n_valid": 950,
+        "success": 344
+      },
+      "Q8_0": {
+        "asr": 35.53,
+        "n_valid": 954,
+        "success": 339
+      }
+    }
+  },
+  "h1_robustness": [
+    {
+      "temperature": 0.0,
+      "q4_asr": 41.67,
+      "q8_asr": 36.46,
+      "p_value": 0.45954,
+      "significant": false,
+      "tost_equivalent": false
+    },
+    {
+      "temperature": 0.7,
+      "q4_asr": 42.17,
+      "q8_asr": 35.46,
+      "p_value": 0.00259,
+      "significant": true,
+      "tost_equivalent": false
+    },
+    {
+      "temperature": 1.0,
+      "q4_asr": 43.05,
+      "q8_asr": 35.53,
+      "p_value": 0.00077,
+      "significant": true,
+      "tost_equivalent": false
+    }
+  ]
+}

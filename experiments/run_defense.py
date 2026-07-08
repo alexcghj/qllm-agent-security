@@ -33,7 +33,7 @@ CONFIGS = [
     {"family": "llama3.2-1b", "quant": "Q8_0",
      "ollama_name": "llama3.2:1b-instruct-q8_0"},
 ]
-SEEDS = [42, 123, 456]
+SEEDS = [42, 123, 456, 789, 1011, 1213, 1415, 1617, 1819, 2021]  # 10 seeds для согласованности с основным прогоном
 TEMPERATURE = 0.7
 
 
@@ -55,7 +55,7 @@ def main():
             agent = SimulatedAgent(client, cfg["ollama_name"], defense=defense)
             runs = []
             for seed in SEEDS:
-                for scn in tqdm(scenarios, desc=f"  {cfg['quant']} {defense}",
+                for scn in tqdm(scenarios, desc=f"  {cfg['quant']} {defense} s={seed}",
                                 leave=False):
                     r = agent.run_scenario(scn, seed=seed, temperature=TEMPERATURE)
                     runs.append(r)
@@ -93,6 +93,7 @@ def main():
         print(f"  [hardened] {fam}: Q4={q4['asr']:.0f}% Q8={q8['asr']:.0f}% "
               f"p={zt['p_value']:.3f} → {v}")
 
+    os.makedirs(os.path.join(here, "results"), exist_ok=True)
     with open(os.path.join(here, "results", "defense_results.json"), "w",
               encoding="utf-8") as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)

@@ -63,7 +63,7 @@ def main():
         agent = SimulatedAgent(client, cfg["ollama_name"])
         runs = []
         for seed in SEEDS:
-            for scn in tqdm(scenarios, desc=f"  {cfg['family']} {cfg['quant']}",
+            for scn in tqdm(scenarios, desc=f"  {cfg['family']} {cfg['quant']} seed={seed}",
                             leave=False):
                 r = agent.run_scenario(scn, seed=seed, temperature=TEMPERATURE)
                 runs.append(r)
@@ -87,6 +87,7 @@ def main():
             print(f"  {fam}: Q4={q4['asr']:.0f}% Q8={q8['asr']:.0f}% "
                   f"p={zt['p_value']:.3f} → {v}")
 
+    os.makedirs(os.path.join(here, "results"), exist_ok=True)
     with open(os.path.join(here, "results", "injecagent_results.json"), "w",
               encoding="utf-8") as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)

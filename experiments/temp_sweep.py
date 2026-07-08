@@ -32,7 +32,7 @@ CONFIGS = [
     {"quant": "Q8_0",   "ollama_name": "qwen2.5:1.5b-instruct-q8_0"},
 ]
 TEMPERATURES = [0.0, 0.7, 1.0]
-SEEDS = [42, 123, 456]   # для temp=0 seed не влияет, но держим единообразно
+SEEDS = [42, 123, 456, 789, 1011, 1213, 1415, 1617, 1819, 2021]  # 10 seeds для согласованности с основным прогоном (temp=0 всё равно детерминирован)
 
 
 def main():
@@ -60,7 +60,7 @@ def main():
             runs = []
             seeds = SEEDS if temp > 0 else [SEEDS[0]]  # temp=0 детерминирован
             for seed in seeds:
-                for scn in tqdm(scenarios, desc=f"  {cfg['quant']} t={temp}",
+                for scn in tqdm(scenarios, desc=f"  {cfg['quant']} t={temp} s={seed}",
                                 leave=False):
                     r = agent.run_scenario(scn, seed=seed, temperature=temp)
                     runs.append(r)
