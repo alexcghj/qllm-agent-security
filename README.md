@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21268938.svg)](https://doi.org/10.5281/zenodo.21268938)
+
 # Quantization and the Security of Small LLM Agents
 
 Systematic study of what determines the vulnerability of small (0.5–4B) LLM
@@ -160,6 +162,10 @@ statistics.
 
 Code released for reproducibility. If you use it, please cite the paper
 (preprint link to be added on arXiv release).
+
+Reproducibility artifacts are archived on Zenodo:
+
+DOI: https://doi.org/10.5281/zenodo.21268938
 
 ---
 
