@@ -1,0 +1,424 @@
+{
+  "H1_quantization": [
+    {
+      "family": "llama3.2-1b",
+      "q4_asr": 49.89,
+      "q8_asr": 48.23,
+      "p_value": 0.46601,
+      "significant": false,
+      "effect_h": 0.033,
+      "effect_mag": "negligible"
+    },
+    {
+      "family": "qwen2.5-0.5b",
+      "q4_asr": 87.28,
+      "q8_asr": 85.6,
+      "p_value": 0.25051,
+      "significant": false,
+      "effect_h": 0.061,
+      "effect_mag": "negligible"
+    },
+    {
+      "family": "qwen2.5-1.5b",
+      "q4_asr": 41.75,
+      "q8_asr": 34.63,
+      "p_value": 0.00133,
+      "significant": true,
+      "effect_h": 0.147,
+      "effect_mag": "negligible"
+    },
+    {
+      "family": "qwen2.5-3b",
+      "q4_asr": 30.93,
+      "q8_asr": 31.01,
+      "p_value": 0.95919,
+      "significant": false,
+      "effect_h": 0.002,
+      "effect_mag": "negligible"
+    }
+  ],
+  "H2_style": {
+    "pairs": [
+      {
+        "group_a": "imperative",
+        "group_b": "authority",
+        "asr_a": 82.3,
+        "asr_b": 36.0,
+        "diff_pp": 46.32,
+        "z": 26.867,
+        "p_value": 0.0,
+        "effect_h": 0.987,
+        "effect_magnitude": "large",
+        "significant_holm": true
+      },
+      {
+        "group_a": "imperative",
+        "group_b": "hidden",
+        "asr_a": 82.3,
+        "asr_b": 84.8,
+        "diff_pp": -2.47,
+        "z": -1.913,
+        "p_value": 0.05573,
+        "effect_h": 0.067,
+        "effect_magnitude": "negligible",
+        "significant_holm": false
+      },
+      {
+        "group_a": "imperative",
+        "group_b": "roleplay",
+        "asr_a": 82.3,
+        "asr_b": 54.1,
+        "diff_pp": 28.19,
+        "z": 17.405,
+        "p_value": 0.0,
+        "effect_h": 0.62,
+        "effect_magnitude": "medium",
+        "significant_holm": true
+      },
+      {
+        "group_a": "imperative",
+        "group_b": "urgency",
+        "asr_a": 82.3,
+        "asr_b": 39.0,
+        "diff_pp": 43.32,
+        "z": 25.405,
+        "p_value": 0.0,
+        "effect_h": 0.925,
+        "effect_magnitude": "large",
+        "significant_holm": true
+      },
+      {
+        "group_a": "imperative",
+        "group_b": "code_block",
+        "asr_a": 82.3,
+        "asr_b": 16.0,
+        "diff_pp": 66.31,
+        "z": 37.331,
+        "p_value": 0.0,
+        "effect_h": 1.45,
+        "effect_magnitude": "large",
+        "significant_holm": true
+      },
+      {
+        "group_a": "imperative",
+        "group_b": "few_shot",
+        "asr_a": 82.3,
+        "asr_b": 48.9,
+        "diff_pp": 33.42,
+        "z": 20.255,
+        "p_value": 0.0,
+        "effect_h": 0.725,
+        "effect_magnitude": "medium",
+        "significant_holm": true
+      },
+      {
+        "group_a": "imperative",
+        "group_b": "fake_output",
+        "asr_a": 82.3,
+        "asr_b": 34.2,
+        "diff_pp": 48.12,
+        "z": 27.613,
+        "p_value": 0.0,
+        "effect_h": 1.024,
+        "effect_magnitude": "large",
+        "significant_holm": true
+      },
+      {
+        "group_a": "authority",
+        "group_b": "hidden",
+        "asr_a": 36.0,
+        "asr_b": 84.8,
+        "diff_pp": -48.8,
+        "z": -28.352,
+        "p_value": 0.0,
+        "effect_h": 1.053,
+        "effect_magnitude": "large",
+        "significant_holm": true
+      },
+      {
+        "group_a": "authority",
+        "group_b": "roleplay",
+        "asr_a": 36.0,
+        "asr_b": 54.1,
+        "diff_pp": -18.14,
+        "z": -10.359,
+        "p_value": 0.0,
+        "effect_h": 0.367,
+        "effect_magnitude": "small",
+        "significant_holm": true
+      },
+      {
+        "group_a": "authority",
+        "group_b": "urgency",
+        "asr_a": 36.0,
+        "asr_b": 39.0,
+        "diff_pp": -3.0,
+        "z": -1.756,
+        "p_value": 0.0791,
+        "effect_h": 0.062,
+        "effect_magnitude": "negligible",
+        "significant_holm": false
+      },
+      {
+        "group_a": "authority",
+        "group_b": "code_block",
+        "asr_a": 36.0,
+        "asr_b": 16.0,
+        "diff_pp": 19.99,
+        "z": 12.657,
+        "p_value": 0.0,
+        "effect_h": 0.464,
+        "effect_magnitude": "small",
+        "significant_holm": true
+      },
+      {
+        "group_a": "authority",
+        "group_b": "few_shot",
+        "asr_a": 36.0,
+        "asr_b": 48.9,
+        "diff_pp": -12.9,
+        "z": -7.429,
+        "p_value": 0.0,
+        "effect_h": 0.262,
+        "effect_magnitude": "small",
+        "significant_holm": true
+      },
+      {
+        "group_a": "authority",
+        "group_b": "fake_output",
+        "asr_a": 36.0,
+        "asr_b": 34.2,
+        "diff_pp": 1.8,
+        "z": 1.053,
+        "p_value": 0.29225,
+        "effect_h": 0.038,
+        "effect_magnitude": "negligible",
+        "significant_holm": false
+      },
+      {
+        "group_a": "hidden",
+        "group_b": "roleplay",
+        "asr_a": 84.8,
+        "asr_b": 54.1,
+        "diff_pp": 30.66,
+        "z": 19.066,
+        "p_value": 0.0,
+        "effect_h": 0.687,
+        "effect_magnitude": "medium",
+        "significant_holm": true
+      },
+      {
+        "group_a": "hidden",
+        "group_b": "urgency",
+        "asr_a": 84.8,
+        "asr_b": 39.0,
+        "diff_pp": 45.79,
+        "z": 26.918,
+        "p_value": 0.0,
+        "effect_h": 0.991,
+        "effect_magnitude": "large",
+        "significant_holm": true
+      },
+      {
+        "group_a": "hidden",
+        "group_b": "code_block",
+        "asr_a": 84.8,
+        "asr_b": 16.0,
+        "diff_pp": 68.78,
+        "z": 38.63,
+        "p_value": 0.0,
+        "effect_h": 1.517,
+        "effect_magnitude": "large",
+        "significant_holm": true
+      },
+      {
+        "group_a": "hidden",
+        "group_b": "few_shot",
+        "asr_a": 84.8,
+        "asr_b": 48.9,
+        "diff_pp": 35.89,
+        "z": 21.865,
+        "p_value": 0.0,
+        "effect_h": 0.792,
+        "effect_magnitude": "medium",
+        "significant_holm": true
+      },
+      {
+        "group_a": "hidden",
+        "group_b": "fake_output",
+        "asr_a": 84.8,
+        "asr_b": 34.2,
+        "diff_pp": 50.6,
+        "z": 29.081,
+        "p_value": 0.0,
+        "effect_h": 1.091,
+        "effect_magnitude": "large",
+        "significant_holm": true
+      },
+      {
+        "group_a": "roleplay",
+        "group_b": "urgency",
+        "asr_a": 54.1,
+        "asr_b": 39.0,
+        "diff_pp": 15.13,
+        "z": 8.674,
+        "p_value": 0.0,
+        "effect_h": 0.305,
+        "effect_magnitude": "small",
+        "significant_holm": true
+      },
+      {
+        "group_a": "roleplay",
+        "group_b": "code_block",
+        "asr_a": 54.1,
+        "asr_b": 16.0,
+        "diff_pp": 38.12,
+        "z": 22.357,
+        "p_value": 0.0,
+        "effect_h": 0.83,
+        "effect_magnitude": "large",
+        "significant_holm": true
+      },
+      {
+        "group_a": "roleplay",
+        "group_b": "few_shot",
+        "asr_a": 54.1,
+        "asr_b": 48.9,
+        "diff_pp": 5.23,
+        "z": 3.014,
+        "p_value": 0.00258,
+        "effect_h": 0.105,
+        "effect_magnitude": "negligible",
+        "significant_holm": true
+      },
+      {
+        "group_a": "roleplay",
+        "group_b": "fake_output",
+        "asr_a": 54.1,
+        "asr_b": 34.2,
+        "diff_pp": 19.94,
+        "z": 11.303,
+        "p_value": 0.0,
+        "effect_h": 0.404,
+        "effect_magnitude": "small",
+        "significant_holm": true
+      },
+      {
+        "group_a": "urgency",
+        "group_b": "code_block",
+        "asr_a": 39.0,
+        "asr_b": 16.0,
+        "diff_pp": 22.99,
+        "z": 14.36,
+        "p_value": 0.0,
+        "effect_h": 0.526,
+        "effect_magnitude": "medium",
+        "significant_holm": true
+      },
+      {
+        "group_a": "urgency",
+        "group_b": "few_shot",
+        "asr_a": 39.0,
+        "asr_b": 48.9,
+        "diff_pp": -9.9,
+        "z": -5.711,
+        "p_value": 0.0,
+        "effect_h": 0.2,
+        "effect_magnitude": "negligible",
+        "significant_holm": true
+      },
+      {
+        "group_a": "urgency",
+        "group_b": "fake_output",
+        "asr_a": 39.0,
+        "asr_b": 34.2,
+        "diff_pp": 4.81,
+        "z": 2.798,
+        "p_value": 0.00515,
+        "effect_h": 0.1,
+        "effect_magnitude": "negligible",
+        "significant_holm": true
+      },
+      {
+        "group_a": "code_block",
+        "group_b": "few_shot",
+        "asr_a": 16.0,
+        "asr_b": 48.9,
+        "diff_pp": -32.89,
+        "z": -19.675,
+        "p_value": 0.0,
+        "effect_h": 0.726,
+        "effect_magnitude": "medium",
+        "significant_holm": true
+      },
+      {
+        "group_a": "code_block",
+        "group_b": "fake_output",
+        "asr_a": 16.0,
+        "asr_b": 34.2,
+        "diff_pp": -18.19,
+        "z": -11.576,
+        "p_value": 0.0,
+        "effect_h": 0.426,
+        "effect_magnitude": "small",
+        "significant_holm": true
+      },
+      {
+        "group_a": "few_shot",
+        "group_b": "fake_output",
+        "asr_a": 48.9,
+        "asr_b": 34.2,
+        "diff_pp": 14.7,
+        "z": 8.412,
+        "p_value": 0.0,
+        "effect_h": 0.3,
+        "effect_magnitude": "small",
+        "significant_holm": true
+      }
+    ],
+    "n_comparisons": 28,
+    "n_significant_after_correction": 25
+  },
+  "H3_size": [
+    {
+      "size_b": 0.5,
+      "asr": 85.6,
+      "baseline": 16.0,
+      "usable": false
+    },
+    {
+      "size_b": 1.5,
+      "asr": 34.63,
+      "baseline": 100.0,
+      "usable": true
+    },
+    {
+      "size_b": 3.0,
+      "asr": 31.01,
+      "baseline": 86.0,
+      "usable": true
+    }
+  ],
+  "H4_arch": [
+    {
+      "arch": "gemma",
+      "roleplay_asr": 62.5,
+      "n": 120
+    },
+    {
+      "arch": "llama",
+      "roleplay_asr": 64.2,
+      "n": 480
+    },
+    {
+      "arch": "phi",
+      "roleplay_asr": 99.2,
+      "n": 120
+    },
+    {
+      "arch": "qwen",
+      "roleplay_asr": 42.0,
+      "n": 930
+    }
+  ]
+}
