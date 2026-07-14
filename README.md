@@ -1,14 +1,19 @@
 # Quantization and the Security of Small LLM Agents
 
-[![Preprint DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21343931.svg)](https://doi.org/10.5281/zenodo.21343931)
-[![Artifact DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21268938.svg)](https://doi.org/10.5281/zenodo.21268938)
+[![Preprint](https://img.shields.io/badge/Preprint-Zenodo-1682D4?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.21343931)
+[![Artifact DOI](https://img.shields.io/badge/Artifact-10.5281%2Fzenodo.21268938-1682D4?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.21268938)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0001--7197--8001-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0001-7197-8001)
 
 Systematic study of what determines the vulnerability of small (0.5–4B) LLM agents to indirect prompt injection: quantization, model size, architecture, and attack style.
 
 **Preprint:** [Zenodo DOI 10.5281/zenodo.21343931](https://doi.org/10.5281/zenodo.21343931)  
 **Code and reproducibility artifact:** [Zenodo DOI 10.5281/zenodo.21268938](https://doi.org/10.5281/zenodo.21268938)
 
-Author: Aleksandr Kuleshov (Peter the Great St. Petersburg Polytechnic University) · ORCID 0009-0001-7197-8001
+**Author:** Aleksandr Kuleshov  
+Peter the Great St. Petersburg Polytechnic University · [ORCID 0009-0001-7197-8001](https://orcid.org/0009-0001-7197-8001)
+
 ---
 
 ## TL;DR — key findings
